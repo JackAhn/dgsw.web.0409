@@ -1,10 +1,10 @@
 package kr.hs.dgsw.web_01_409.Service;
 
-import kr.hs.dgsw.web_01_408.Domain.Comment;
-import kr.hs.dgsw.web_01_408.Domain.User;
-import kr.hs.dgsw.web_01_408.Protocol.CommentUsernameProtocol;
-import kr.hs.dgsw.web_01_408.Repository.CommentRepository;
-import kr.hs.dgsw.web_01_408.Repository.UserRepository;
+import kr.hs.dgsw.web_01_409.Domain.Comment;
+import kr.hs.dgsw.web_01_409.Domain.User;
+import kr.hs.dgsw.web_01_409.Protocol.CommentUsernameProtocol;
+import kr.hs.dgsw.web_01_409.Repository.CommentRepository;
+import kr.hs.dgsw.web_01_409.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

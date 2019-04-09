@@ -1,6 +1,6 @@
 package kr.hs.dgsw.web_01_409.Service;
 
-import kr.hs.dgsw.web_01_408.Domain.User;
+import kr.hs.dgsw.web_01_409.Domain.User;
 
 import java.util.List;
 

@@ -1,7 +1,8 @@
 package kr.hs.dgsw.web_01_409.Service;
 
-import kr.hs.dgsw.web_01_408.Domain.Comment;
-import kr.hs.dgsw.web_01_408.Protocol.CommentUsernameProtocol;
+
+import kr.hs.dgsw.web_01_409.Domain.Comment;
+import kr.hs.dgsw.web_01_409.Protocol.CommentUsernameProtocol;
 
 import java.util.List;
 

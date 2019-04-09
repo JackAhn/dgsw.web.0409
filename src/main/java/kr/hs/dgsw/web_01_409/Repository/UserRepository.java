@@ -1,6 +1,7 @@
 package kr.hs.dgsw.web_01_409.Repository;
 
-import kr.hs.dgsw.web_01_408.Domain.User;
+
+import kr.hs.dgsw.web_01_409.Domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
