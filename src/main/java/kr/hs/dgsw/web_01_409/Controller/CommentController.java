@@ -24,7 +24,7 @@ public class CommentController {
         return this.commentService.listAllCommments();
     }
 
-    @GetMapping("/listdeletefind/{id}")
+    @GetMapping("/listfind/{id}")
     public Comment findComments(@PathVariable Long id){
         return this.commentService.findComments(id);
     }

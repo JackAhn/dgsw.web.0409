@@ -78,6 +78,8 @@ public class CommentServiceImpl implements CommentService {
         Comment modify = this.commentRepository.findById(comment.getId())
                 .map(found-> {
                     found.setContent(Optional.ofNullable(comment.getContent()).orElse(found.getContent()));
+                    found.setStoragePath(Optional.ofNullable(comment.getStoragePath()).orElse(found.getStoragePath()));
+                    found.setOriginalName(Optional.ofNullable(comment.getOriginalName()).orElse(found.getOriginalName()));
                     return this.commentRepository.save(found);
                 })
                 .orElse(null);
