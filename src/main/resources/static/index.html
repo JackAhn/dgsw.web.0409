@@ -66,6 +66,21 @@
     </div>
 </div>
 
+<div id="container4" style="display: none;">
+    <div id="modifycomment-container" style="display: flex; justify-content: center; align-items: center; background-color: #000000aa; position: fixed; left: 0; top: 0; width: 100vw; height: 100vh;">
+        <div style="text-align: center; background-color: white; padding: 0 30px;">
+            <div style="margin: 30px 0 30px 0;">코멘트 수정</div>
+            <div>사진 변경 안할 시 원래 등록한 사진으로 유지됩니다.</div><br>
+            <div><input type="text" id="modifycontent"></div>
+            <div><input type="file" id="modifycontent-img"></div>
+            <div style="margin: 30px 0">
+                <button onclick="SaveModifyComment()">수정</button>
+                <button onclick="CloseModifyCommentDialog()">취소</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <style>
     body{
         margin: 0;
@@ -120,6 +135,9 @@
     }
     function CloseCommentDialog(){
         $('#container3').hide(1000);
+    }
+    function CloseModifyCommentDialog(){
+        $('#container4').hide(1000);
     }
     async function checkLogin(){
         let id =  $('#userid').val().trim();
@@ -207,6 +225,7 @@
                     <div style="width: 200px;overflow: auto">${response.email}</div>
                     <br><br>
                     <h2>회원정보 수정</h2>
+                    입력된 정보만 수정됩니다.<br>공백은 허용 안됩니다.<br>
                     <input type="text" id="modify-name" placeholder="이름">
                     <input type="text" id="modify-email" placeholder="이메일">
                     <input type="file" id="upload-file${response.id}">
@@ -289,12 +308,12 @@
     }
 </script>
 <script>
+    let commentid;
     function addComment(comment){
         $('#comment-list').append(`<div id="line${comment.id}" style="display: flex;border-bottom: 1px solid silver;"><div style="width: 150px;">${comment.username}</div>
-        <div style="width: 350px;overflow: auto;">${comment.content}<div><div style="width: 350px;overflow: auto;">${comment.created}<div><img src="http://localhost:8080/attachment/comment/${comment.id}" style="width: 100px; height: 75px;"><button onclick="deleteComment(${comment.id})">삭제</button></div></div>`);
-    }
-    function addLoginComment(comment, response){
-
+        <div style="width: 350px;overflow: auto;">${comment.content}<div><div style="width: 350px;overflow: auto;">${comment.created}<div><img id="img${comment.id}" src="http://localhost:8080/attachment/comment/${comment.id}" style="width: 100px; height: 75px;">
+        <button onclick="modifyComment(${comment.id})">수정</button>
+        <button onclick="deleteComment(${comment.id})">삭제</button></div></div>`);
     }
     async function fetchCommentList(){
         try{
@@ -348,13 +367,79 @@
             console.log(err);
         }
     }
+
+    async function modifyComment(id){
+        commentid = "";
+        if(userId === null || userId === ""){
+            alert('로그인 후 이용가능합니다.');
+            openLoginDialog();
+            return;
+        }
+        let data = await $.get(`/listfind/${id}`);
+        if(`${data.userId}` !== userId || data === null || data === ""){
+            alert('자신의 코멘트만 수정이 가능합니다.');
+            return;
+        }
+        commentid = id;
+        $('#modifycontent').val(data.content);
+        $('#container4').show(400);
+    }
+
+    async function SaveModifyComment(){
+        let file = $(`#modifycontent-img`)[0].files[0];
+        let content = $('#modifycontent').val();
+        if(file=="" || content == ""){
+            alert('공백이 존재합니다.');
+            return;
+        }
+        let path = null;
+        let name = null;
+        let formdata = new FormData();
+        formdata.append("srcFile", file);
+        let response = await $.ajax({
+            type: 'POST',
+            url: '/attachment',
+            data: formdata,
+            contentType: false,
+            processData: false
+        });
+        path = response.storagePath;
+        name = response.originalName;
+
+        let requestData = {
+            id : commentid,
+            userId: userId,
+            content: content,
+            storagePath : path,
+            originalName: name
+        };
+        try{
+            let response = await $.ajax({
+                url: '/listmodify',
+                type: 'PUT',
+                contentType: 'application/json',
+                dataType: 'json',
+                data: JSON.stringify(requestData)
+            });
+            alert('수정되었습니다.');
+            $(`#modifycontent-img`).val("");
+            $('#modifycontent').val("");
+            var time    = new Date().getTime(); // 이미지 새로고침을 위한 랜덤 값
+            var src     = 'http://localhost:8080/attachment/comment/'+commentid + '?time=' + time;
+            $('#img'+commentid).attr('src', src);
+            CloseModifyCommentDialog();
+        }catch(err){
+            console.log(err);
+        }
+    }
+
     async function deleteComment(id){
         if(userId === null || userId === ""){
             alert('로그인 후 이용가능합니다.');
             openLoginDialog();
             return;
         }
-        let data = await $.get(`/listdeletefind/${id}`);
+        let data = await $.get(`/listfind/${id}`);
         if(`${data.userId}` !== userId || data === null || data === ""){
             alert('자신의 코멘트만 삭제가 가능합니다.');
             return;
