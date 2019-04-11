@@ -172,6 +172,14 @@
 </script>
 <script>
     let userId = null;
+    function dateDiffInDays(date){
+        let perday = 1000 * 60 * 60 * 24;
+        let today = new Date();
+        let utc1 = Date.UTC(today.getFullYear(), today.getMonth(), today.getDate());
+        let setdate = new Date(Date.parse(date));``
+        let utc2 = Date.UTC(setdate.getFullYear(), setdate.getMonth(), setdate.getDate());
+        return Math.floor((utc1-utc2) / perday);
+    }
     async function fetchUserList(){
         $('#user-list').empty();
         let response = await $.get({
@@ -218,11 +226,13 @@
     function AddListUser(response) {
         $('#user-list').empty();
         userId = `${response.id}`;
+        let data = dateDiffInDays(`${response.joined}`);
         $('#user-list').append(
             `<div id="line${response.id}">
                     <img src=http://localhost:8080/attachment/user/${response.id} style="width: 100px; height: 100px;"><br>
                     <div style="width: 200px;">${response.username}</div>
                     <div style="width: 200px;overflow: auto">${response.email}</div>
+                    <div style="width: 200px;overflow: auto">${data}</div>
                     <br><br>
                     <h2>회원정보 수정</h2>
                     입력된 정보만 수정됩니다.<br>공백은 허용 안됩니다.<br>
